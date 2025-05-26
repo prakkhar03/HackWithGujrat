@@ -1,0 +1,8 @@
+django
+djangorestframework
+djangorestframework-simplejwt
+transformers
+torch
+pdfplumber
+pandas
+python-magic
