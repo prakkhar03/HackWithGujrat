@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+
+{% block title %}DhanSaathi - Your Financial Guide{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">Your Path to Financial Freedom Starts Here</h1>
+                <p class="lead mb-4">DhanSaathi helps you make informed financial decisions through AI-powered analysis and personalized recommendations.</p>
+                <div class="d-flex gap-3">
+                    <a href="/register" class="btn btn-primary btn-lg">Get Started</a>
+                    <a href="/learn-more" class="btn btn-outline-primary btn-lg">Learn More</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <img src="{% static 'images/hero-image.svg' %}" alt="Financial Planning" class="img-fluid">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Why Choose DhanSaathi?</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-robot fa-3x text-primary mb-3"></i>
+                        <h3 class="card-title h5">AI-Powered Analysis</h3>
+                        <p class="card-text">Get personalized investment recommendations based on your spending patterns and financial goals.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-chart-pie fa-3x text-primary mb-3"></i>
+                        <h3 class="card-title h5">Expense Tracking</h3>
+                        <p class="card-text">Track your expenses effortlessly and get insights into your spending habits.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-graduation-cap fa-3x text-primary mb-3"></i>
+                        <h3 class="card-title h5">Financial Education</h3>
+                        <p class="card-text">Learn about financial concepts and investment strategies through our educational resources.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="how-it-works py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">How It Works</h2>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div class="step-number mb-3">1</div>
+                    <h4>Sign Up</h4>
+                    <p>Create your account and set your financial goals</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div class="step-number mb-3">2</div>
+                    <h4>Track Expenses</h4>
+                    <p>Record your daily expenses and income</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div class="step-number mb-3">3</div>
+                    <h4>Get Analysis</h4>
+                    <p>Receive AI-powered insights about your finances</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div class="step-number mb-3">4</div>
+                    <h4>Take Action</h4>
+                    <p>Follow personalized recommendations to grow your wealth</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">What Our Users Say</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="{% static 'images/user1.jpg' %}" alt="User" class="rounded-circle me-3" width="50">
+                            <div>
+                                <h5 class="mb-0">Rahul Sharma</h5>
+                                <small class="text-muted">Software Engineer</small>
+                            </div>
+                        </div>
+                        <p class="card-text">"DhanSaathi has completely transformed how I manage my finances. The AI recommendations are spot on!"</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="{% static 'images/user2.jpg' %}" alt="User" class="rounded-circle me-3" width="50">
+                            <div>
+                                <h5 class="mb-0">Priya Patel</h5>
+                                <small class="text-muted">Marketing Manager</small>
+                            </div>
+                        </div>
+                        <p class="card-text">"The expense tracking feature is so easy to use. I can now see exactly where my money goes each month."</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="{% static 'images/user3.jpg' %}" alt="User" class="rounded-circle me-3" width="50">
+                            <div>
+                                <h5 class="mb-0">Amit Kumar</h5>
+                                <small class="text-muted">Business Owner</small>
+                            </div>
+                        </div>
+                        <p class="card-text">"The financial education resources have helped me make better investment decisions for my business."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section py-5">
+    <div class="container text-center">
+        <h2 class="mb-4">Ready to Take Control of Your Finances?</h2>
+        <p class="lead mb-4">Join thousands of users who are already making smarter financial decisions with DhanSaathi.</p>
+        <a href="/register" class="btn btn-primary btn-lg">Get Started Now</a>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+
+    .step-number {
+        width: 40px;
+        height: 40px;
+        background-color: var(--primary-color);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        font-weight: bold;
+    }
+
+    .testimonials .card {
+        transition: transform 0.3s ease;
+    }
+
+    .testimonials .card:hover {
+        transform: translateY(-5px);
+    }
+
+    .cta-section {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+    }
+
+    .cta-section .btn-primary {
+        background-color: white;
+        color: var(--primary-color);
+        border: none;
+    }
+
+    .cta-section .btn-primary:hover {
+        background-color: #f8f9fa;
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %} 
