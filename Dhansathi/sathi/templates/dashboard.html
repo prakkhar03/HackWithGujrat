@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - DhanSaathi{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2>Financial Dashboard</h2>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Expenses</h5>
+                    <h3 class="card-text" id="totalExpenses">₹0</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Investable Amount</h5>
+                    <h3 class="card-text" id="investableAmount">₹0</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Investment Advice</h5>
+                    <p class="card-text" id="investmentAdvice">Loading...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Expense Upload -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Upload Bank Statement</h5>
+                    <form id="uploadForm" onsubmit="handleUpload(event)">
+                        <div class="mb-3">
+                            <input type="file" class="form-control" id="statementFile" accept=".pdf" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Ask DhanSaathi</h5>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="chatQuery" placeholder="Ask about your finances...">
+                    </div>
+                    <button onclick="askBot()" class="btn btn-primary">Ask</button>
+                    <div id="chatResponse" class="mt-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Expenses -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Recent Expenses</h5>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Category</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="expensesList">
+                                <!-- Expenses will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Check authentication
+if (!localStorage.getItem('access_token')) {
+    window.location.href = '/login';
+}
+
+// Helper function to make authenticated API calls
+async function apiCall(endpoint, options = {}) {
+    const token = localStorage.getItem('access_token');
+    const headers = {
+        'Authorization': `Bearer ${token}`,
+        ...options.headers
+    };
+    
+    try {
+        const response = await fetch(`/api/${endpoint}`, { ...options, headers });
+        if (response.status === 401) {
+            // Token expired
+            window.location.href = '/login';
+            return null;
+        }
+        return response;
+    } catch (error) {
+        console.error('API call failed:', error);
+        return null;
+    }
+}
+
+// Load investment advice
+async function loadInvestmentAdvice() {
+    const response = await apiCall('advice/', { method: 'GET' });
+    if (response) {
+        const data = await response.json();
+        document.getElementById('investmentAdvice').textContent = data.advice;
+    }
+}
+
+// Handle file upload
+async function handleUpload(event) {
+    event.preventDefault();
+    const file = document.getElementById('statementFile').files[0];
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await apiCall('upload/', {
+        method: 'POST',
+        body: formData
+    });
+
+    if (response && response.ok) {
+        alert('Statement uploaded successfully!');
+        // Refresh the page to show new data
+        location.reload();
+    } else {
+        alert('Upload failed. Please try again.');
+    }
+}
+
+// Ask the chatbot
+async function askBot() {
+    const query = document.getElementById('chatQuery').value;
+    if (!query) return;
+
+    const response = await apiCall('chat/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ query })
+    });
+
+    if (response && response.ok) {
+        const data = await response.json();
+        document.getElementById('chatResponse').innerHTML = `
+            <div class="alert alert-info">
+                ${data.response}
+            </div>
+        `;
+    }
+}
+
+// Initialize dashboard
+async function initDashboard() {
+    await loadInvestmentAdvice();
+    // Add more initialization as needed
+}
+
+// Start the dashboard
+initDashboard();
+</script>
+{% endblock %} 

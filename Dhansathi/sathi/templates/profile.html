@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - DhanSaathi{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <h2 class="text-center mb-4">Your Profile</h2>
+                    <form id="profileForm" onsubmit="handleProfileUpdate(event)">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="full_name" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="full_name" name="full_name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="age" class="form-label">Age</label>
+                                <input type="number" class="form-control" id="age" name="age" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="occupation" class="form-label">Occupation</label>
+                                <input type="text" class="form-control" id="occupation" name="occupation" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="monthly_income" class="form-label">Monthly Income</label>
+                                <input type="number" class="form-control" id="monthly_income" name="monthly_income" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="risk_tolerance" class="form-label">Risk Tolerance</label>
+                            <select class="form-select" id="risk_tolerance" name="risk_tolerance" required>
+                                <option value="">Select your risk tolerance</option>
+                                <option value="low">Low - I prefer safe investments</option>
+                                <option value="medium">Medium - I can handle some risk</option>
+                                <option value="high">High - I'm comfortable with high risk</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="investment_goals" class="form-label">Investment Goals</label>
+                            <textarea class="form-control" id="investment_goals" name="investment_goals" rows="3" required></textarea>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Update Profile</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Check authentication
+if (!localStorage.getItem('access_token')) {
+    window.location.href = '/login';
+}
+
+// Helper function for API calls
+async function apiCall(endpoint, options = {}) {
+    const token = localStorage.getItem('access_token');
+    const headers = {
+        'Authorization': `Bearer ${token}`,
+        ...options.headers
+    };
+    
+    try {
+        const response = await fetch(`/api/${endpoint}`, { ...options, headers });
+        if (response.status === 401) {
+            window.location.href = '/login';
+            return null;
+        }
+        return response;
+    } catch (error) {
+        console.error('API call failed:', error);
+        return null;
+    }
+}
+
+// Load profile data
+async function loadProfile() {
+    const response = await apiCall('profile/', { method: 'GET' });
+    if (response && response.ok) {
+        const data = await response.json();
+        document.getElementById('full_name').value = data.full_name || '';
+        document.getElementById('age').value = data.age || '';
+        document.getElementById('occupation').value = data.occupation || '';
+        document.getElementById('monthly_income').value = data.monthly_income || '';
+        document.getElementById('risk_tolerance').value = data.risk_tolerance || '';
+        document.getElementById('investment_goals').value = data.investment_goals || '';
+    }
+}
+
+// Handle profile update
+async function handleProfileUpdate(event) {
+    event.preventDefault();
+    const form = event.target;
+    
+    const formData = {
+        full_name: form.full_name.value,
+        age: parseInt(form.age.value),
+        occupation: form.occupation.value,
+        monthly_income: parseFloat(form.monthly_income.value),
+        risk_tolerance: form.risk_tolerance.value,
+        investment_goals: form.investment_goals.value
+    };
+
+    const response = await apiCall('profile/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+    });
+
+    if (response && response.ok) {
+        alert('Profile updated successfully!');
+    } else {
+        alert('Failed to update profile. Please try again.');
+    }
+}
+
+// Load profile data when page loads
+loadProfile();
+</script>
+{% endblock %} 

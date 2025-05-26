@@ -8,7 +8,25 @@ from .recommend import calculate_investable_amount, generate_investment_advice
 from .serializer import ProfileSerializer
 import pdfplumber
 import datetime
+from django.shortcuts import render
 
+# Template views
+def home_view(request):
+    return render(request, 'home.html')
+
+def login_view(request):
+    return render(request, 'login.html')
+
+def register_view(request):
+    return render(request, 'register.html')
+
+def dashboard_view(request):
+    return render(request, 'dashboard.html')
+
+def profile_view(request):
+    return render(request, 'profile.html')
+
+# API views
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def save_profile(request):

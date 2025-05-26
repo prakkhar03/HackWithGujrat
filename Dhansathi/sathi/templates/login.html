@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - DhanSaathi{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <h2 class="text-center mb-4">Login to DhanSaathi</h2>
+                    <form id="loginForm" onsubmit="handleLogin(event)">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Login</button>
+                        </div>
+                        <div class="text-center mt-3">
+                            <p>Don't have an account? <a href="/register">Register here</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function handleLogin(event) {
+    event.preventDefault();
+    const form = event.target;
+    const formData = {
+        username: form.username.value,
+        password: form.password.value
+    };
+
+    try {
+        const response = await fetch('/api/login/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            // Store tokens in localStorage
+            localStorage.setItem('access_token', data.access);
+            localStorage.setItem('refresh_token', data.refresh);
+            // Redirect to dashboard
+            window.location.href = '/dashboard';
+        } else {
+            const error = await response.json();
+            alert('Login failed: ' + (error.detail || 'Please check your credentials'));
+        }
+    } catch (error) {
+        alert('An error occurred. Please try again.');
+    }
+}
+</script>
+{% endblock %} 

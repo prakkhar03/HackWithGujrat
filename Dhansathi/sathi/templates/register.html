@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register - DhanSaathi{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <h2 class="text-center mb-4">Create Your Account</h2>
+                    <form id="registerForm" onsubmit="handleRegister(event)">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password2" class="form-label">Confirm Password</label>
+                            <input type="password" class="form-control" id="password2" name="password2" required>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Register</button>
+                        </div>
+                        <div class="text-center mt-3">
+                            <p>Already have an account? <a href="/login">Login here</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function handleRegister(event) {
+    event.preventDefault();
+    const form = event.target;
+    
+    if (form.password.value !== form.password2.value) {
+        alert('Passwords do not match!');
+        return;
+    }
+
+    const formData = {
+        username: form.username.value,
+        email: form.email.value,
+        password: form.password.value,
+        password2: form.password2.value
+    };
+
+    try {
+        const response = await fetch('/api/register/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        });
+
+        if (response.ok) {
+            alert('Registration successful! Please login.');
+            window.location.href = '/login';
+        } else {
+            const error = await response.json();
+            if (error.password) {
+                alert('Registration failed: ' + error.password.join(', '));
+            } else if (error.password2) {
+                alert('Registration failed: ' + error.password2.join(', '));
+            } else {
+                alert('Registration failed: ' + JSON.stringify(error));
+            }
+        }
+    } catch (error) {
+        alert('An error occurred. Please try again.');
+    }
+}
+</script>
+{% endblock %} 
