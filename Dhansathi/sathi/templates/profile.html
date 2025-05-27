@@ -3,12 +3,13 @@
 {% block title %}Profile - DhanSaathi{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
+<div class="container py-4">
+    <div class="row">
+        <!-- Left Column - Profile Form -->
+        <div class="col-md-8 mb-4">
             <div class="card shadow">
-                <div class="card-body p-5">
-                    <h2 class="text-center mb-4">Your Profile</h2>
+                <div class="card-body p-4">
+                    <h2 class="mb-4">Your Profile</h2>
                     <form id="profileForm" onsubmit="handleProfileUpdate(event)">
                         <div class="row mb-3">
                             <div class="col-md-6">
@@ -27,30 +28,100 @@
                                 <input type="text" class="form-control" id="occupation" name="occupation" required>
                             </div>
                             <div class="col-md-6">
-                                <label for="monthly_income" class="form-label">Monthly Income</label>
+                                <label for="monthly_income" class="form-label">Monthly Income (₹)</label>
                                 <input type="number" class="form-control" id="monthly_income" name="monthly_income" required>
                             </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="risk_tolerance" class="form-label">Risk Tolerance</label>
-                            <select class="form-select" id="risk_tolerance" name="risk_tolerance" required>
-                                <option value="">Select your risk tolerance</option>
-                                <option value="low">Low - I prefer safe investments</option>
-                                <option value="medium">Medium - I can handle some risk</option>
-                                <option value="high">High - I'm comfortable with high risk</option>
-                            </select>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="savings_goal" class="form-label">Monthly Savings Goal (₹)</label>
+                                <input type="number" class="form-control" id="savings_goal" name="savings_goal" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="risk_tolerance" class="form-label">Risk Tolerance</label>
+                                <select class="form-select" id="risk_tolerance" name="risk_tolerance" required>
+                                    <option value="">Select your risk tolerance</option>
+                                    <option value="low">Low - I prefer safe investments</option>
+                                    <option value="medium">Medium - I can handle some risk</option>
+                                    <option value="high">High - I'm comfortable with high risk</option>
+                                </select>
+                            </div>
                         </div>
 
                         <div class="mb-3">
                             <label for="investment_goals" class="form-label">Investment Goals</label>
-                            <textarea class="form-control" id="investment_goals" name="investment_goals" rows="3" required></textarea>
+                            <textarea class="form-control" id="investment_goals" name="investment_goals" rows="3" required 
+                                placeholder="e.g., Retirement planning, Children's education, Home purchase, etc."></textarea>
                         </div>
 
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary">Update Profile</button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column - Stats & Suggestions -->
+        <div class="col-md-4">
+            <!-- Financial Summary -->
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Financial Profile Summary</h5>
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span>Monthly Income</span>
+                            <span class="text-primary" id="summaryIncome">₹0</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span>Savings Goal</span>
+                            <span class="text-success" id="summarySavingsGoal">₹0</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span>Risk Profile</span>
+                            <span class="badge bg-info" id="summaryRisk">Not Set</span>
+                        </div>
+                        <div class="list-group-item px-0">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span>Profile Completion</span>
+                                <span id="profileCompletion">0%</span>
+                            </div>
+                            <div class="progress" style="height: 5px;">
+                                <div class="progress-bar bg-success" id="profileProgress" role="progressbar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Investment Goals -->
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Your Investment Goals</h5>
+                    <div id="investmentGoalsDisplay" class="small text-muted">
+                        Set your investment goals to get personalized recommendations
+                    </div>
+                </div>
+            </div>
+
+            <!-- Investment Suggestions -->
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Investment Suggestions</h5>
+                    <div id="investmentSuggestions">
+                        <!-- Suggestions will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expense Categories -->
+            <div class="card shadow">
+                <div class="card-body">
+                    <h5 class="card-title">Top Expense Categories</h5>
+                    <div id="expenseCategories">
+                        <!-- Categories will be loaded here -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -63,6 +134,15 @@
 // Check authentication
 if (!localStorage.getItem('access_token')) {
     window.location.href = '/login';
+}
+
+// Format currency
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+        maximumFractionDigits: 0
+    }).format(amount);
 }
 
 // Helper function for API calls
@@ -91,45 +171,244 @@ async function loadProfile() {
     const response = await apiCall('profile/', { method: 'GET' });
     if (response && response.ok) {
         const data = await response.json();
+        // Fill form fields
         document.getElementById('full_name').value = data.full_name || '';
         document.getElementById('age').value = data.age || '';
         document.getElementById('occupation').value = data.occupation || '';
         document.getElementById('monthly_income').value = data.monthly_income || '';
+        document.getElementById('savings_goal').value = data.savings_goal || '';
         document.getElementById('risk_tolerance').value = data.risk_tolerance || '';
         document.getElementById('investment_goals').value = data.investment_goals || '';
+
+        // Update summary
+        document.getElementById('summaryIncome').textContent = formatCurrency(data.monthly_income || 0);
+        document.getElementById('summarySavingsGoal').textContent = formatCurrency(data.savings_goal || 0);
+        document.getElementById('summaryRisk').textContent = data.risk_tolerance ? 
+            data.risk_tolerance.charAt(0).toUpperCase() + data.risk_tolerance.slice(1) : 'Not Set';
+        
+        // Update investment goals display
+        const goalsDisplay = document.getElementById('investmentGoalsDisplay');
+        goalsDisplay.textContent = data.investment_goals || 'No investment goals set';
+
+        // Calculate profile completion
+        const fields = ['full_name', 'age', 'occupation', 'monthly_income', 'savings_goal', 'risk_tolerance', 'investment_goals'];
+        const filledFields = fields.filter(field => data[field]).length;
+        const completion = Math.round((filledFields / fields.length) * 100);
+        
+        document.getElementById('profileCompletion').textContent = `${completion}%`;
+        document.getElementById('profileProgress').style.width = `${completion}%`;
+
+        // Load additional data
+        loadFinancialSummary();
+        loadInvestmentSuggestions();
+        loadExpenseCategories();
     }
 }
 
-// Handle profile update
+// Load financial summary
+async function loadFinancialSummary() {
+    const response = await apiCall('dashboard/', { method: 'GET' });
+    if (response && response.ok) {
+        const data = await response.json();
+        
+        // Update summary
+        document.getElementById('summaryExpenses').textContent = formatCurrency(data.current_month_total || 0);
+        const savings = (parseFloat(document.getElementById('monthly_income').value) || 0) - (data.current_month_total || 0);
+        document.getElementById('summarySavings').textContent = formatCurrency(savings);
+        
+        // Update savings progress
+        const savingsGoal = parseFloat(document.getElementById('savings_goal').value) || 1;
+        const progress = Math.min((savings / savingsGoal) * 100, 100);
+        const progressBar = document.getElementById('savingsProgress');
+        progressBar.style.width = `${progress}%`;
+        progressBar.setAttribute('aria-valuenow', progress);
+    }
+}
+
+// Load investment suggestions
+async function loadInvestmentSuggestions() {
+    const response = await apiCall('recommendations/', { method: 'GET' });
+    if (response && response.ok) {
+        const data = await response.json();
+        const suggestionsDiv = document.getElementById('investmentSuggestions');
+        
+        if (data.recommendations && data.recommendations.length > 0) {
+            suggestionsDiv.innerHTML = `
+                <div class="list-group list-group-flush">
+                    ${data.recommendations.map(rec => `
+                        <div class="list-group-item px-0">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">${rec.title}</h6>
+                                <small class="text-${rec.type === 'alert' ? 'danger' : 'success'}">
+                                    ${rec.type === 'alert' ? '⚠️' : '💡'}
+                                </small>
+                            </div>
+                            <p class="mb-1 small">${rec.description}</p>
+                            ${rec.amount ? 
+                                `<small class="text-${rec.type === 'alert' ? 'danger' : 'success'}">
+                                    Amount: ${formatCurrency(rec.amount)}
+                                </small>` : ''}
+                            <div class="mt-2">
+                                <button class="btn btn-sm btn-outline-primary" onclick="handleAction('${rec.action}', '${rec.id}')">
+                                    ${rec.action}
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        } else {
+            suggestionsDiv.innerHTML = '<div class="alert alert-info">Complete your profile to get personalized investment suggestions.</div>';
+        }
+    }
+}
+
+// Handle recommendation actions
+function handleAction(action, recId) {
+    // You can implement specific actions here
+    switch(action) {
+        case 'Set Up Auto-Save':
+            showAlert('info', 'Auto-save feature coming soon!');
+            break;
+        case 'View Options':
+        case 'View Portfolio':
+            showAlert('info', 'Investment options will be available soon!');
+            break;
+        case 'Learn More':
+            showAlert('info', 'Detailed guides coming soon!');
+            break;
+        case 'Create Plan':
+            showAlert('info', 'Investment planning tool coming soon!');
+            break;
+        default:
+            showAlert('info', 'This feature is coming soon!');
+    }
+}
+
+// Load expense categories
+async function loadExpenseCategories() {
+    const response = await apiCall('dashboard/', { method: 'GET' });
+    if (response && response.ok) {
+        const data = await response.json();
+        const categoriesDiv = document.getElementById('expenseCategories');
+        
+        if (data.category_breakdown) {
+            const categories = Object.entries(data.category_breakdown)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+            
+            categoriesDiv.innerHTML = `
+                <div class="list-group list-group-flush">
+                    ${categories.map(([category, amount]) => `
+                        <div class="list-group-item px-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>${category}</span>
+                                <span class="text-muted">${formatCurrency(amount)}</span>
+                            </div>
+                            <div class="progress mt-1" style="height: 4px;">
+                                <div class="progress-bar" role="progressbar" 
+                                    style="width: ${(amount / data.current_month_total * 100)}%"></div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        } else {
+            categoriesDiv.innerHTML = '<div class="alert alert-info">No expense data available.</div>';
+        }
+    }
+}
+
+// Handle profile form submission
 async function handleProfileUpdate(event) {
     event.preventDefault();
     const form = event.target;
+    const submitButton = form.querySelector('[type="submit"]');
+    const originalText = submitButton.innerHTML;
     
-    const formData = {
-        full_name: form.full_name.value,
-        age: parseInt(form.age.value),
-        occupation: form.occupation.value,
-        monthly_income: parseFloat(form.monthly_income.value),
-        risk_tolerance: form.risk_tolerance.value,
-        investment_goals: form.investment_goals.value
-    };
+    // Validate savings goal against monthly income
+    const monthlyIncome = parseFloat(form.querySelector('#monthly_income').value);
+    const savingsGoal = parseFloat(form.querySelector('#savings_goal').value);
+    
+    if (savingsGoal > monthlyIncome) {
+        showAlert('danger', 'Your savings goal cannot be higher than your monthly income');
+        return;
+    }
+    
+    submitButton.disabled = true;
+    submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...';
 
-    const response = await apiCall('profile/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-    });
+    try {
+        const formData = new FormData(form);
+        const jsonData = {};
+        formData.forEach((value, key) => {
+            jsonData[key] = value;
+        });
 
-    if (response && response.ok) {
-        alert('Profile updated successfully!');
-    } else {
-        alert('Failed to update profile. Please try again.');
+        const response = await apiCall('profile/save/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(jsonData)
+        });
+
+        if (response && response.ok) {
+            const data = await response.json();
+            showAlert('success', data.message || 'Profile saved successfully');
+            loadProfile(); // Reload profile data
+        } else {
+            const error = await response.json();
+            showAlert('danger', error.message || 'Failed to save profile');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showAlert('danger', 'An error occurred while saving your profile');
+    } finally {
+        submitButton.disabled = false;
+        submitButton.innerHTML = originalText;
     }
 }
 
-// Load profile data when page loads
+// Function to show alerts
+function showAlert(type, message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+    
+    const container = document.querySelector('.container');
+    container.insertBefore(alertDiv, container.firstChild);
+
+    // Auto dismiss after 5 seconds
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 5000);
+}
+
+// Load initial data
 loadProfile();
+
+// Add validation for savings goal
+document.getElementById('savings_goal').addEventListener('input', function(e) {
+    const monthlyIncome = parseFloat(document.getElementById('monthly_income').value) || 0;
+    const savingsGoal = parseFloat(e.target.value) || 0;
+    
+    if (savingsGoal > monthlyIncome) {
+        e.target.setCustomValidity('Savings goal cannot exceed monthly income');
+        showAlert('warning', 'Your savings goal cannot be higher than your monthly income (₹' + monthlyIncome.toLocaleString('en-IN') + ')');
+    } else {
+        e.target.setCustomValidity('');
+    }
+});
+
+document.getElementById('monthly_income').addEventListener('input', function(e) {
+    // Trigger validation of savings goal when monthly income changes
+    const savingsGoalInput = document.getElementById('savings_goal');
+    const event = new Event('input');
+    savingsGoalInput.dispatchEvent(event);
+});
 </script>
 {% endblock %} 

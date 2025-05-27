@@ -1,11 +1,21 @@
 from rest_framework import serializers
 from .models import UserProfile
+from django.contrib.auth.models import User
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ['goal', 'risk_tolerance']
-from django.contrib.auth.models import User
+        fields = [
+            'full_name',
+            'age',
+            'occupation',
+            'monthly_income',
+            'savings_goal',
+            'risk_tolerance',
+            'investment_goals',
+            'total_expenditure'
+        ]
+
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
     password2 = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'}, label="Confirm password")

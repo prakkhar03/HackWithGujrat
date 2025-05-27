@@ -124,4 +124,70 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     }
+
+    // Handle profile form submission
+    const profileForm = document.getElementById('profileForm');
+    if (profileForm) {
+        // Load profile data when the form is present
+        fetch('/api/profile/', {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Populate form fields with profile data
+            Object.keys(data).forEach(key => {
+                const input = document.getElementById(key);
+                if (input) {
+                    input.value = data[key];
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error loading profile:', error);
+        });
+
+        // Handle form submission
+        profileForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const submitButton = this.querySelector('[type="submit"]');
+            const originalText = submitButton.innerHTML;
+            
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...';
+
+            // Convert FormData to JSON
+            const jsonData = {};
+            formData.forEach((value, key) => {
+                jsonData[key] = value;
+            });
+
+            fetch('/api/profile/save/', {
+                method: 'POST',
+                body: JSON.stringify(jsonData),
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                showAlert('success', 'Profile saved successfully');
+            })
+            .catch(error => {
+                showAlert('danger', 'Error saving profile. Please try again.');
+                console.error('Error:', error);
+            })
+            .finally(() => {
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalText;
+            });
+        });
+    }
 }); 

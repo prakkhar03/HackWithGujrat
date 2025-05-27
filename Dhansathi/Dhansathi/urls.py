@@ -2,18 +2,19 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from sathi import views
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('sathi.urls')),
-    # Template URLs
-    path('', views.home_view, name='home'),
-    path('login/', views.login_view, name='login'),
-    path('register/', views.register_view, name='register'),
-    path('dashboard/', views.dashboard_view, name='dashboard'),
-    path('profile/', views.profile_view, name='profile'),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    # API authentication endpoints
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    # Include all app URLs
+    path('', include('sathi.urls')),
+] 
+
+# Add media files handling
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # Add static files handling for development
 if settings.DEBUG:

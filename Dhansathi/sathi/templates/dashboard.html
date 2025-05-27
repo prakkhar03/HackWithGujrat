@@ -12,74 +12,72 @@
 
     <!-- Quick Stats -->
     <div class="row mb-4">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card bg-primary text-white">
                 <div class="card-body">
                     <h5 class="card-title">Total Expenses</h5>
                     <h3 class="card-text" id="totalExpenses">₹0</h3>
+                    <p class="card-text small" id="expenseChange"></p>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card bg-success text-white">
                 <div class="card-body">
-                    <h5 class="card-title">Investable Amount</h5>
-                    <h3 class="card-text" id="investableAmount">₹0</h3>
+                    <h5 class="card-title">Monthly Average</h5>
+                    <h3 class="card-text" id="monthlyAverage">₹0</h3>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card bg-info text-white">
                 <div class="card-body">
-                    <h5 class="card-title">Investment Advice</h5>
-                    <p class="card-text" id="investmentAdvice">Loading...</p>
+                    <h5 class="card-title">This Month</h5>
+                    <h3 class="card-text" id="currentMonthTotal">₹0</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark">
+                <div class="card-body">
+                    <h5 class="card-title">Top Category</h5>
+                    <h3 class="card-text" id="topCategory">-</h3>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Expense Upload -->
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Upload Bank Statement</h5>
-                    <form id="uploadForm" onsubmit="handleUpload(event)">
-                        <div class="mb-3">
-                            <input type="file" class="form-control" id="statementFile" accept=".pdf" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Upload</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Ask DhanSaathi</h5>
-                    <div class="mb-3">
-                        <input type="text" class="form-control" id="chatQuery" placeholder="Ask about your finances...">
-                    </div>
-                    <button onclick="askBot()" class="btn btn-primary">Ask</button>
-                    <div id="chatResponse" class="mt-3"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Recent Expenses -->
+    <!-- Main Content -->
     <div class="row">
-        <div class="col-md-12">
+        <!-- Left Column -->
+        <div class="col-md-8">
+            <!-- Monthly Trend -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Monthly Expense Trend</h5>
+                    <canvas id="trendChart" height="300"></canvas>
+                </div>
+            </div>
+
+            <!-- Recent Expenses -->
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Recent Expenses</h5>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="card-title mb-0">Recent Expenses</h5>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="filterExpenses('all')">All</button>
+                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="filterExpenses('month')">This Month</button>
+                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="filterExpenses('week')">This Week</button>
+                        </div>
+                    </div>
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table table-hover">
                             <thead>
                                 <tr>
                                     <th>Date</th>
                                     <th>Category</th>
-                                    <th>Amount</th>
+                                    <th>Description</th>
+                                    <th class="text-end">Amount</th>
                                 </tr>
                             </thead>
                             <tbody id="expensesList">
@@ -87,6 +85,55 @@
                             </tbody>
                         </table>
                     </div>
+                    <div id="expensesPagination" class="d-flex justify-content-center mt-3">
+                        <!-- Pagination will be added here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-md-4">
+            <!-- Upload Statement -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Upload Bank Statement</h5>
+                    <form id="uploadForm" onsubmit="handleUpload(event)">
+                        <div class="mb-3">
+                            <input type="file" class="form-control" id="statementFile" accept=".pdf" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Upload Statement</button>
+                    </form>
+                    <div id="uploadStatus" class="mt-3"></div>
+                </div>
+            </div>
+
+            <!-- Smart Recommendations -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title d-flex justify-content-between align-items-center">
+                        Smart Recommendations
+                        <span class="badge bg-primary" id="recommendationCount">0</span>
+                    </h5>
+                    <div id="recommendations" class="list-group list-group-flush">
+                        <!-- Loading placeholder -->
+                        <div class="placeholder-glow">
+                            <div class="placeholder col-12 mb-2" style="height: 100px"></div>
+                            <div class="placeholder col-12 mb-2" style="height: 100px"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ask DhanSaathi -->
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Ask DhanSaathi</h5>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="chatQuery" placeholder="Ask about your finances...">
+                    </div>
+                    <button onclick="askBot()" class="btn btn-primary w-100">Ask</button>
+                    <div id="chatResponse" class="mt-3"></div>
                 </div>
             </div>
         </div>
@@ -95,13 +142,32 @@
 {% endblock %}
 
 {% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 // Check authentication
 if (!localStorage.getItem('access_token')) {
     window.location.href = '/login';
 }
 
-// Helper function to make authenticated API calls
+// Format currency
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+        maximumFractionDigits: 0
+    }).format(amount);
+}
+
+// Format date
+function formatDate(dateStr) {
+    return new Date(dateStr).toLocaleDateString('en-IN', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
+}
+
+// Helper function for API calls
 async function apiCall(endpoint, options = {}) {
     const token = localStorage.getItem('access_token');
     const headers = {
@@ -112,7 +178,6 @@ async function apiCall(endpoint, options = {}) {
     try {
         const response = await fetch(`/api/${endpoint}`, { ...options, headers });
         if (response.status === 401) {
-            // Token expired
             window.location.href = '/login';
             return null;
         }
@@ -123,40 +188,305 @@ async function apiCall(endpoint, options = {}) {
     }
 }
 
-// Load investment advice
-async function loadInvestmentAdvice() {
-    const response = await apiCall('advice/', { method: 'GET' });
-    if (response) {
+// Load dashboard data
+async function loadDashboardData() {
+    const response = await apiCall('dashboard/', { method: 'GET' });
+    if (response && response.ok) {
         const data = await response.json();
-        document.getElementById('investmentAdvice').textContent = data.advice;
+        
+        // Update stats
+        document.getElementById('totalExpenses').textContent = formatCurrency(data.total_expenditure);
+        document.getElementById('monthlyAverage').textContent = formatCurrency(data.monthly_average);
+        document.getElementById('currentMonthTotal').textContent = formatCurrency(data.current_month_total);
+        document.getElementById('topCategory').textContent = data.top_category || '-';
+        
+        // Show month-over-month change
+        if (data.month_change) {
+            const changeText = data.month_change > 0 ? 
+                `↑ ${data.month_change.toFixed(1)}% from last month` :
+                `↓ ${Math.abs(data.month_change).toFixed(1)}% from last month`;
+            document.getElementById('expenseChange').textContent = changeText;
+            document.getElementById('expenseChange').className = 
+                `card-text small ${data.month_change > 0 ? 'text-warning' : 'text-info'}`;
+        }
+        
+        // Update trend chart
+        updateTrendChart(data.monthly_trend);
+        
+        // Load initial expenses
+        loadExpenses('all');
+        
+        // Load recommendations
+        loadRecommendations();
     }
+}
+
+// Update trend chart
+function updateTrendChart(data) {
+    const ctx = document.getElementById('trendChart');
+    if (window.trendChart) {
+        window.trendChart.destroy();
+    }
+    
+    window.trendChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: Object.keys(data),
+            datasets: [{
+                label: 'Monthly Expenses',
+                data: Object.values(data),
+                borderColor: '#007bff',
+                tension: 0.1,
+                fill: false
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: value => formatCurrency(value)
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: context => formatCurrency(context.parsed.y)
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Load expenses
+async function loadExpenses(timeframe = 'all', page = 1) {
+    const response = await apiCall(`expenses/?timeframe=${timeframe}&page=${page}`, { method: 'GET' });
+    if (response && response.ok) {
+        const data = await response.json();
+        const tbody = document.getElementById('expensesList');
+        tbody.innerHTML = '';
+        
+        data.expenses.forEach(expense => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${formatDate(expense.date)}</td>
+                    <td><span class="badge bg-${getBadgeColor(expense.category)}">${expense.category}</span></td>
+                    <td>${expense.description}</td>
+                    <td class="text-end">${formatCurrency(expense.amount)}</td>
+                </tr>
+            `;
+        });
+        
+        updatePagination(data.total_pages, data.current_page, timeframe);
+    }
+}
+
+// Get badge color for category
+function getBadgeColor(category) {
+    const colors = {
+        'Food': 'success',
+        'Transportation': 'info',
+        'Shopping': 'primary',
+        'Entertainment': 'warning',
+        'Utilities': 'secondary',
+        'Healthcare': 'danger',
+        'Education': 'purple',
+        'Insurance': 'orange',
+        'Investment': 'teal',
+        'Other': 'secondary'
+    };
+    return colors[category] || 'secondary';
+}
+
+// Update pagination
+function updatePagination(totalPages, currentPage, timeframe) {
+    const pagination = document.getElementById('expensesPagination');
+    if (totalPages <= 1) {
+        pagination.innerHTML = '';
+        return;
+    }
+    
+    let html = `
+        <nav>
+            <ul class="pagination pagination-sm">
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="loadExpenses('${timeframe}', ${currentPage - 1})">Previous</a>
+                </li>
+    `;
+    
+    for (let i = 1; i <= totalPages; i++) {
+        html += `
+            <li class="page-item ${currentPage === i ? 'active' : ''}">
+                <a class="page-link" href="#" onclick="loadExpenses('${timeframe}', ${i})">${i}</a>
+            </li>
+        `;
+    }
+    
+    html += `
+                <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="loadExpenses('${timeframe}', ${currentPage + 1})">Next</a>
+                </li>
+            </ul>
+        </nav>
+    `;
+    
+    pagination.innerHTML = html;
+}
+
+// Load recommendations
+async function loadRecommendations() {
+    const response = await apiCall('recommendations/', { method: 'GET' });
+    if (response && response.ok) {
+        const data = await response.json();
+        const recommendationsDiv = document.getElementById('recommendations');
+        const recommendationCount = document.getElementById('recommendationCount');
+        
+        if (data.recommendations && data.recommendations.length > 0) {
+            recommendationCount.textContent = data.recommendations.length;
+            
+            recommendationsDiv.innerHTML = data.recommendations.map(rec => `
+                <div class="list-group-item border-0 px-0 pb-3">
+                    <div class="d-flex w-100 justify-content-between align-items-start mb-2">
+                        <h6 class="mb-1 text-primary">${rec.title}</h6>
+                        <span class="badge ${rec.type === 'alert' ? 'bg-danger' : 'bg-success'} rounded-pill">
+                            ${rec.type === 'alert' ? '⚠️' : '💡'}
+                        </span>
+                    </div>
+                    <p class="mb-2 small text-muted">${rec.description}</p>
+                    ${rec.amount ? `
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="badge bg-light text-dark me-2">Amount:</span>
+                            <span class="text-${rec.type === 'alert' ? 'danger' : 'success'}">
+                                ${formatCurrency(rec.amount)}
+                            </span>
+                        </div>
+                    ` : ''}
+                    <button class="btn btn-sm btn-outline-primary" 
+                            onclick="handleRecommendationAction('${rec.action}', '${rec.id}')">
+                        ${rec.action}
+                    </button>
+                </div>
+            `).join('');
+        } else {
+            recommendationCount.textContent = '0';
+            recommendationsDiv.innerHTML = `
+                <div class="text-center text-muted py-3">
+                    <i class="fas fa-info-circle mb-2"></i>
+                    <p>Complete your profile to get personalized recommendations</p>
+                    <a href="/profile/" class="btn btn-sm btn-primary">Update Profile</a>
+                </div>
+            `;
+        }
+    }
+}
+
+// Handle recommendation actions
+function handleRecommendationAction(action, recId) {
+    switch(action) {
+        case 'Set Up Auto-Save':
+            showAlert('info', 'Auto-save feature will be available soon!');
+            break;
+        case 'View Options':
+        case 'View Portfolio':
+            showAlert('info', 'Investment options will be available soon!');
+            break;
+        case 'Learn More':
+            showAlert('info', 'Detailed guides coming soon!');
+            break;
+        case 'Create Plan':
+            showAlert('info', 'Investment planning tool coming soon!');
+            break;
+        case 'Review Budget':
+            window.location.href = '/profile/#budget';
+            break;
+        default:
+            showAlert('info', 'This feature is coming soon!');
+    }
+}
+
+// Show alerts
+function showAlert(type, message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+    
+    const container = document.querySelector('.container');
+    container.insertBefore(alertDiv, container.firstChild);
+
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 5000);
 }
 
 // Handle file upload
 async function handleUpload(event) {
     event.preventDefault();
-    const file = document.getElementById('statementFile').files[0];
+    const fileInput = document.getElementById('statementFile');
+    const statusDiv = document.getElementById('uploadStatus');
+    
+    if (!fileInput.files.length) {
+        statusDiv.innerHTML = '<div class="alert alert-danger">Please select a file to upload</div>';
+        return;
+    }
+
+    const file = fileInput.files[0];
+    if (!file.name.toLowerCase().endsWith('.pdf')) {
+        statusDiv.innerHTML = '<div class="alert alert-danger">Please upload a PDF file</div>';
+        return;
+    }
+
+    statusDiv.innerHTML = '<div class="alert alert-info">Uploading and processing your statement...</div>';
+    
     const formData = new FormData();
     formData.append('file', file);
 
-    const response = await apiCall('upload/', {
-        method: 'POST',
-        body: formData
-    });
+    try {
+        const response = await apiCall('upload/', {
+            method: 'POST',
+            body: formData
+        });
 
-    if (response && response.ok) {
-        alert('Statement uploaded successfully!');
-        // Refresh the page to show new data
-        location.reload();
-    } else {
-        alert('Upload failed. Please try again.');
+        const data = await response.json();
+        
+        if (response.ok) {
+            statusDiv.innerHTML = `
+                <div class="alert alert-success">
+                    <h6 class="alert-heading">Upload Successful!</h6>
+                    <p class="mb-1">Found ${data.expenses_found} expenses</p>
+                    <p class="mb-1">Total: ${formatCurrency(data.total_expenditure)}</p>
+                    <p class="mb-0">Categories: ${data.categories_found.join(', ')}</p>
+                </div>
+            `;
+            
+            // Refresh dashboard data
+            loadDashboardData();
+        } else {
+            statusDiv.innerHTML = `
+                <div class="alert alert-danger">
+                    ${data.message || 'An error occurred while processing your statement'}
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error('Upload error:', error);
+        statusDiv.innerHTML = '<div class="alert alert-danger">An error occurred while uploading your statement</div>';
     }
 }
 
 // Ask the chatbot
 async function askBot() {
-    const query = document.getElementById('chatQuery').value;
+    const query = document.getElementById('chatQuery').value.trim();
     if (!query) return;
+
+    const responseDiv = document.getElementById('chatResponse');
+    responseDiv.innerHTML = '<div class="alert alert-info">Thinking...</div>';
 
     const response = await apiCall('chat/', {
         method: 'POST',
@@ -168,21 +498,27 @@ async function askBot() {
 
     if (response && response.ok) {
         const data = await response.json();
-        document.getElementById('chatResponse').innerHTML = `
-            <div class="alert alert-info">
+        responseDiv.innerHTML = `
+            <div class="alert alert-success">
+                <i class="fas fa-robot me-2"></i>
                 ${data.response}
             </div>
         `;
+    } else {
+        responseDiv.innerHTML = '<div class="alert alert-danger">Sorry, I could not process your request.</div>';
     }
+    
+    document.getElementById('chatQuery').value = '';
+}
+
+// Filter expenses
+function filterExpenses(timeframe) {
+    loadExpenses(timeframe, 1);
 }
 
 // Initialize dashboard
-async function initDashboard() {
-    await loadInvestmentAdvice();
-    // Add more initialization as needed
-}
-
-// Start the dashboard
-initDashboard();
+loadDashboardData();
+loadExpenses();
+loadRecommendations();
 </script>
 {% endblock %} 
