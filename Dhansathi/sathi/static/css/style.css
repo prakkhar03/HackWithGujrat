@@ -36,6 +36,18 @@ body {
     margin-bottom: 1.5rem;
 }
 
+.hero-gif {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.hero-gif:hover {
+    transform: scale(1.02);
+}
+
 /* Features Section */
 .features-section{
     border-radius: 10px;
