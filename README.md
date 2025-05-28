@@ -76,23 +76,38 @@ In India, millions of people are starting to invest, but they face these problem
    cd dhansaathi
    ```
 
-2. **Install Dependencies**:
+2. **Create a Virtual Environment**
+   ```bash
+   python -m venv venv
+   ```
+
+3. **Activate the Environment**
+   ```bash
+   venv/Scripts/Activate
+   ```
+
+4. **Install Dependencies**:
    ```bash
    pip install -r requirements.txt
    ```
+As we are using SQLite so directly run the server, thus go to step 7, else if you want to setup your own database, continue from here.
 
-3. **Set Up the Database**:
+5. **Set Up the Database**:
    - Install PostgreSQL and create a database.
    - Update database settings in `settings.py`.
 
-4. **Run the Application**:
+6. **Create a table in the databse**:
    ```bash
+   python manage.py makemigrations
    python manage.py migrate
+   ```
+7. **Run the server**
+   ```bash
    python manage.py runserver
    ```
 
-5. **Access the Platform**:
-   - Open your browser and go to `http://localhost:8000`.
+8. **Access the Platform**:
+   - Open your browser and go to `http://127.0.0.1:8000/`.
 
 ## Security
 
