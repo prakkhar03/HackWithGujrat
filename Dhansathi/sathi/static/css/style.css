@@ -10,7 +10,7 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
-    background-color: #f8f9fa;
+    background-color: #1a1a1a;
 }
 
 /* Card Styles */
@@ -26,7 +26,7 @@ body {
 
 /* Hero Section */
 .hero-section {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--info-color) 100%);
+    background: none;
     color: white;
     padding: 4rem 0;
 }
@@ -37,9 +37,16 @@ body {
 }
 
 /* Features Section */
+.features-section{
+    border-radius: 10px;
+    padding: 10px;
+    background-color: azure;
+    font-family: Georgia, 'Times New Roman', Times, serif, sans-serif;
+}
 .features-section .card {
     text-align: center;
     padding: 2rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .features-section .card i {
@@ -76,13 +83,18 @@ body {
 }
 
 .btn-primary:hover {
-    background-color: darken(var(--primary-color), 10%);
+    background-color: #0056b3;
     transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
 /* Navigation */
 .navbar {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #2a2a2a !important;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .navbar-brand {
@@ -90,20 +102,73 @@ body {
     font-size: 1.5rem;
 }
 
+.navbar-nav .nav-link {
+    color: white !important;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.navbar-nav .nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    background: white;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: width 0.3s ease;
+    box-shadow: 0 0 8px rgba(255,255,255,0.5);
+}
+
+.navbar-nav .nav-link:hover::after {
+    width: 80%;
+}
+
 /* Footer */
 footer {
     background-color: #343a40;
     color: white;
     padding: 3rem 0;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+footer h5 {
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+footer p {
+    margin-bottom: 1rem;
+}
+
+footer ul {
+    list-style: none;
+    padding: 0;
+}
+
+footer ul li {
+    margin-bottom: 0.5rem;
 }
 
 footer a {
     color: white;
     text-decoration: none;
+    transition: color 0.3s ease;
 }
 
 footer a:hover {
-    color: var(--primary-color);
+    color: #FF9933;
+    text-decoration: underline;
+}
+
+footer .social-links a {
+    margin-right: 1rem;
+    font-size: 1.2rem;
 }
 
 /* Responsive Design */
@@ -124,7 +189,11 @@ footer a:hover {
 
 /* Animation Classes */
 .fade-in {
-    animation: fadeIn 0.5s ease-in;
+    animation: fadeIn 0.7s ease-in;
+}
+
+.slide-down {
+    animation: slideDown 0.8s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 @keyframes fadeIn {
@@ -136,4 +205,76 @@ footer a:hover {
         opacity: 1;
         transform: translateY(0);
     }
-} 
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Hero Section Content Enhancements */
+.hero-section .hero-content {
+    background: rgba(255,255,255,0.9);
+    color: #222;
+    padding: 2.5rem 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    position: relative;
+    z-index: 2;
+    font-family: Georgia, 'Times New Roman', Times, serif, sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* How It Works Section */
+.how-it-works {
+    color: #f8f9fa;
+    font-family: Georgia, 'Times New Roman', Times, serif, sans-serif;
+}
+
+.style-heading{
+    margin-top: 45px;
+    margin-bottom: 45px;
+    /* display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px; */
+}
+
+.green-underline {
+    display: block;
+    width: 100px;
+    height: 4px;
+    background-color: #FF9933;
+    margin: 0 auto;
+}
+
+.blue-underline {
+    display: block;
+    width: 100px;
+    height: 4px;
+    background-color: #007bff;
+    margin: 0 auto;
+}
+.white-underline {
+    display: block;
+    width: 100px;
+    height: 4px;
+    background-color: #f8f9fa;
+    margin: 0 auto;
+}
+.orange-underline {
+    display: block;
+    width: 100px;
+    height: 4px;
+    background-color: #FF9933;
+    margin-left: 95px;
+}
+ 

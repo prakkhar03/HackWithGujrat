@@ -5,15 +5,17 @@
 
 {% block content %}
 <!-- Hero Section -->
-<section class="hero-section py-5">
+<section class="hero-section py-5" style="background: none;">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6">
-                <h1 class="display-4 fw-bold mb-4">Your Path to Financial Freedom Starts Here</h1>
-                <p class="lead mb-4">DhanSaathi helps you make informed financial decisions through AI-powered analysis and personalized recommendations.</p>
-                <div class="d-flex gap-3">
-                    <a href="/register" class="btn btn-primary btn-lg">Get Started</a>
-                    <a href="/learn-more" class="btn btn-outline-primary btn-lg">Learn More</a>
+                <div class="hero-content">
+                    <h1 class="display-4 fw-bold mb-4">Your Path to Financial Freedom Starts Here</h1>
+                    <p class="lead mb-4">DhanSaathi helps you make informed financial decisions through AI-powered analysis and personalized recommendations.</p>
+                    <div class="d-flex gap-3">
+                        <a href="/register" class="btn btn-primary btn-lg">Get Started</a>
+                        <a href="/learn-more" class="btn btn-outline-primary btn-lg">Learn More</a>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-6">
@@ -26,7 +28,10 @@
 <!-- Features Section -->
 <section class="features-section py-5 bg-light">
     <div class="container">
-        <h2 class="text-center mb-5">Why Choose DhanSaathi?</h2>
+        <div class="style-head mb-5">
+            <h2 class="text-center">Why Choose DhanSaathi?</h2>
+            <span class="blue-underline"></span>
+        </div>
         <div class="row g-4">
             <div class="col-md-4">
                 <div class="card h-100">
@@ -62,7 +67,10 @@
 <!-- How It Works Section -->
 <section class="how-it-works py-5">
     <div class="container">
-        <h2 class="text-center mb-5">How It Works</h2>
+        <div class="style-heading">
+            <h2 class="text-center">How It Works <span class="text-primary">?</span></h2>
+            <span class="green-underline"></span>
+        </div>
         <div class="row">
             <div class="col-md-3">
                 <div class="text-center">
@@ -97,15 +105,18 @@
 </section>
 
 <!-- Testimonials Section -->
-<section class="testimonials py-5 bg-light">
+<section class="testimonials py-5">
     <div class="container">
-        <h2 class="text-center mb-5">What Our Users Say</h2>
-        <div class="row">
+        <div class="style-header mb-5">
+            <h2 class="text-center " style="font-family: Georgia, 'Times New Roman', Times, serif, sans-serif; color: #f8f9fa;">What Our Users Say</h2>
+            <span class="blue-underline"></span>
+        </div>
+        <div class="row"> 
             <div class="col-md-4">
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-3">
-                            <img src="{% static 'images/user1.jpg' %}" alt="User" class="rounded-circle me-3" width="50">
+                            <img src="{% static 'images/user3.png' %}" alt="User" class="rounded-circle me-3" width="50">
                             <div>
                                 <h5 class="mb-0">Rahul Sharma</h5>
                                 <small class="text-muted">Software Engineer</small>
@@ -119,7 +130,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-3">
-                            <img src="{% static 'images/user2.jpg' %}" alt="User" class="rounded-circle me-3" width="50">
+                            <img src="{% static 'images/user2.png' %}" alt="User" class="rounded-circle me-3" width="50">
                             <div>
                                 <h5 class="mb-0">Priya Patel</h5>
                                 <small class="text-muted">Marketing Manager</small>
@@ -133,7 +144,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-3">
-                            <img src="{% static 'images/user3.jpg' %}" alt="User" class="rounded-circle me-3" width="50">
+                            <img src="{% static 'images/user3.png' %}" alt="User" class="rounded-circle me-3" width="50">
                             <div>
                                 <h5 class="mb-0">Amit Kumar</h5>
                                 <small class="text-muted">Business Owner</small>
@@ -150,7 +161,10 @@
 <!-- CTA Section -->
 <section class="cta-section py-5">
     <div class="container text-center">
-        <h2 class="mb-4">Ready to Take Control of Your Finances?</h2>
+        <div class="last-style-head mb-4">
+            <h2>Ready to Take Control of Your Finances?</h2>
+            <span class="white-underline"></span>
+        </div>
         <p class="lead mb-4">Join thousands of users who are already making smarter financial decisions with DhanSaathi.</p>
         <a href="/register" class="btn btn-primary btn-lg">Get Started Now</a>
     </div>
@@ -159,9 +173,6 @@
 
 {% block extra_css %}
 <style>
-    .hero-section {
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    }
 
     .step-number {
         width: 40px;
@@ -178,6 +189,7 @@
 
     .testimonials .card {
         transition: transform 0.3s ease;
+        font-family: Georgia, 'Times New Roman', Times, serif;
     }
 
     .testimonials .card:hover {
@@ -187,6 +199,8 @@
     .cta-section {
         background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
         color: white;
+        font-family: Georgia, 'Times New Roman', Times, serif, sans-serif;
+        border-radius: 10px;
     }
 
     .cta-section .btn-primary {
