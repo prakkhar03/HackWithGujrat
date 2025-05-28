@@ -76,22 +76,31 @@ In India, millions of people are starting to invest, but they face these problem
    cd dhansaathi
    ```
 
-2. **Install Dependencies**:
+2. **Create a Virtual Environment**:
+   ```bash
+   python -m venv venv
+   # On Linux, use:
+   source venv/bin/activate
+   # On Windows, use:
+   venv\Scripts\activate
+   ```
+
+3. **Install Dependencies**:
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Set Up the Database**:
+4. **Set Up the Database**:
    - Install PostgreSQL and create a database.
    - Update database settings in `settings.py`.
 
-4. **Run the Application**:
+5. **Run the Application**:
    ```bash
    python manage.py migrate
    python manage.py runserver
    ```
 
-5. **Access the Platform**:
+6. **Access the Platform**:
    - Open your browser and go to `http://localhost:8000`.
 
 ## Security
@@ -112,7 +121,7 @@ In India, millions of people are starting to invest, but they face these problem
 
 DhanSaathi is a game-changer for financial planning in India. It makes investing simple, personalized, and educational for everyone, especially those new to finance. By combining AI-powered expense analysis with investment guidance, DhanSaathi helps users make smarter money decisions and build financial confidence.
 
-For feedback or contributions, please reach out at our linkedin profiles or open an issue on this repository.
+For feedback or contributions, please reach out at our LinkedIn profiles or open an issue on this repository.
 Contacts:
 1. [Prakhar Mehrotra](https://www.linkedin.com/in/prakhar-mehrotra03/)
 2. [Prakhar Tiwari](https://www.linkedin.com/in/prakhar-tiwari-8461942b9/)
